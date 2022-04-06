@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>판매자 페이지</title>
+</head>
+<body>
+    <div style="padding: 50px;">
+        <h3>판매자 홈</h3>
+        <hr />
+
+        <h4>물품목록</h4>
+        <table border="1">
+            <tr>
+            <th>번호</th>
+            <th>물품코드</th>
+            <th>물품명</th>
+            <th>가격</th>
+            <th>수량</th>
+            <th>등록일</th>
+            </tr>
+
+            <tr th:each="tmp,idx : ${list}">
+                <td th:text="${idx.count}"></td>
+                <td th:text="${tmp.icode}"></td>
+                <td th:text="${tmp.iname}"></td>
+                <td th:text="${tmp.iprice}"></td>
+                <td th:text="${tmp.iquantity}"></td>
+                <td th:text="${tmp.iregdate}"></td>
+            </tr>
+        </table>
+    </div>
+</body>
+</html>

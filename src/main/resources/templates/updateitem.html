@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>물품수정</title>
+</head>
+
+<body>
+    <div style="padding:50px">
+        <h3>물품수정</h3>
+        <hr />
+
+        <form th:action="@{/seller/updateitem}" method="post"
+            enctype="multipart/form-data">
+            물품코드 : <input type="text" name="icode" th:value="${item.icode}" readonly /><br />
+            물품명 : <input type="text" name="iname" th:value="${item.iname}" /><br />
+            물품내용 : <textarea rows="6" cols="" name="icontent" th:text="${item.icontent}"></textarea><br />
+            가격 : <input type="text" name="iprice" th:value="${item.iprice}" /><br />
+            수량 : <input type="text" name="iquantity" th:value="${item.iquantity}" /><br />
+
+            <img th:src="@{/item/image(code=${item.icode})}" style="width:100px" />
+            대표이미지 : <input type="file" name="timage" /><br />
+            <hr />
+            <input type="submit" value="물품수정" />
+        </form>
+
+    </div>
+
+<style>
+label {
+    display: inline-block;
+    width: 100px;
+    margin-bottom: 8px;;
+    text-align: center;
+}
+</style>
+</body>
+
+</html>
+

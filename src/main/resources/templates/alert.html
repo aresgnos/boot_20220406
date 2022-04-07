@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+   
+    <script th:inline="javascript">
+        /*<![CDATA[*/
+        const msg = [[${msg}]];
+        alert(msg); //알림표시
+        window.location.replace( [[${#httpServletRequest.getContextPath()}]] + "" + [[${url}]] ); //이동하는 페이지
+        /*]]*/ 
+    </script>
+
+</head>
+
+</html>

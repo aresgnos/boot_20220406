@@ -4,14 +4,16 @@ import java.util.List;
 
 import com.example.dto.ItemDTO;
 
+import org.apache.ibatis.annotations.Delete;
 import org.apache.ibatis.annotations.Insert;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Result;
 import org.apache.ibatis.annotations.Results;
 import org.apache.ibatis.annotations.Select;
+import org.apache.ibatis.annotations.Update;
 import org.apache.ibatis.type.JdbcType;
 
-import io.lettuce.core.dynamic.annotation.Param;
+import org.apache.ibatis.annotations.Param;
 
 @Mapper
 public interface ItemMapper {
@@ -28,19 +30,11 @@ public interface ItemMapper {
                         @Param(value = "start") int start,
                         @Param(value = "end") int end);
 
-        // 1개 조회
-        @Select({
-                        "SELECT ICODE, INAME, ICONTENT, IPRICE, IQUANTITY, IREGDATE",
-                        "FROM ITEM",
-                        "WHERE ICODE=#{icode}"
-        })
-        public ItemDTO selectItemOne(@Param(value = "code") long code);
-
         // 물품 등록
         @Insert({
                         " INSERT INTO ITEM",
                         " (ICODE, INAME, ICONTENT, IPRICE, IQUANTITY, IIMAGE, IIMAGESIZE, IIMAGETYPE, IIMAGENAME, UEMAIL )",
-                        " VALUES (SEQ_ITEM_ICODE.NEXTVAL, #{iname},#{icontent}, #{iprice}, #{iquantity}, #{iimage, jdbcType=BLOB}, #{iimagesize},#{iimagetype}, #{iimagename}, #{uemail} )"
+                        " VALUES (SEQ_ITEM_ICODE.NEXTVAL, #{obj.iname},#{obj.icontent}, #{obj.iprice}, #{obj.iquantity}, #{obj.iimage, jdbcType=BLOB}, #{obj.iimagesize},#{obj.iimagetype}, #{obj.iimagename}, #{obj.uemail} )"
         })
         public int insertItemOne(@Param(value = "obj") ItemDTO item);
 
@@ -67,5 +61,40 @@ public interface ItemMapper {
         })
         public ItemDTO selectItemImageOne(
                         @Param(value = "code") long code);
+
+        // 삭제
+        @Delete({
+                        "DELETE FROM ITEM WHERE ICODE=#{code} AND UEMAIL=#{email}"
+        })
+        public int deleteItemOne(
+                        @Param(value = "email") String email,
+                        @Param(value = "code") long code);
+
+        // 1개 조회
+        @Select({
+                        "SELECT ICODE, INAME, ICONTENT, IPRICE, IQUANTITY, IREGDATE",
+                        "FROM ITEM",
+                        "WHERE ICODE=#{code}"
+        })
+        public ItemDTO selectItemOne(@Param(value = "code") long code);
+
+        // 물품 수정
+        // UPDATE 테이블명 SET 바꿀 값1, 바꿀 값2, 바꿀 값3,,,,, WHERE 조건
+        // if문을 쓰려면 <script>를 써야함.
+        @Update({
+                        "<script>",
+                        "UPDATE ITEM SET INAME=#{obj.iname}, ICONTENT=#{obj.icontent}, IPRICE=#{obj.iprice}, IQUANTITY=#{obj.iquantity}",
+
+                        "<if test='obj.iimage != null'>",
+                        ", IIMAGE=#{obj.iimage}",
+                        ", IIMAGESIZE=#{obj.iimagesize}",
+                        ", IIMAGETYPE=#{obj.iimagetype}",
+                        ", IIMAGENAME=#{obj.iimagename}",
+                        "</if>",
+
+                        "WHERE ICODE=#{obj.icode} AND UEMAIL=#{obj.uemail}",
+                        "</script>"
+        })
+        public int updateItemOne(@Param(value = "obj") ItemDTO item);
 
 }

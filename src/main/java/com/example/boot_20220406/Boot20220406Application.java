@@ -14,8 +14,10 @@ import org.springframework.context.annotation.PropertySource;
 // 컨트롤러, 환경설정파일
 @ComponentScan(basePackages = {
 		"com.example.controller",
+		"com.example.restcontroller",
 		"com.example.config",
 		"com.example.service"
+
 })
 
 // mapper

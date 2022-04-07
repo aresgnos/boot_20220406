@@ -8,12 +8,18 @@
 </head>
 <body>
     <div style="padding: 50px;">
+        <div>
         <h3>판매자 홈</h3>
+        </div>
+        
         <hr />
-        <a th:href="@{/seller/insertitem}">물품등록</a>
-
-        <h4>물품목록</h4>
-        <table border="1">
+       
+            <h4>물품목록</h4>
+            <a th:href="@{/seller/insertitem}">물품등록</a>
+        
+        
+        <table>
+            <thead>
             <tr>
             <th>번호</th>
             <th>물품코드</th>
@@ -24,7 +30,9 @@
             <th>이미지</th>
             <th>버튼</th>
             </tr>
+        </thead>
 
+            <tbody>
             <tr th:each="tmp,idx : ${list}">
                 <td th:text="${idx.count}"></td>
                 <td>
@@ -42,15 +50,15 @@
         			<button th:onclick="|javascript:handleDelete('${tmp.icode}')|">삭제</button>
                 </td>
             </tr>
+            </tbody>
         </table>
 
         <div class="pagination">
             <th:block th:each="i : ${#numbers.sequence(1, pages)}">
                 <a th:href="@{/seller/home(page=${i}, txt=${param.txt})}" th:text="${i}"></a>
             </th:block>
-
-            <p th:text="${_csrf.token}"></p>
             </div>
+            
         </div>
     </div>
     <script>
@@ -99,3 +107,24 @@
 	</script>
 </body>
 </html>
+
+<style>
+table {
+    border-collapse: collapse;
+    width:100%;
+   
+}
+
+td, tr{
+    border-collapse: collapse;
+    padding: 10px;
+    text-align: center;
+}
+
+thead {
+    background-color: #000000;
+    color: #ffffff;
+}
+
+
+</style>

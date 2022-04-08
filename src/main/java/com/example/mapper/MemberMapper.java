@@ -6,9 +6,35 @@ import org.apache.ibatis.annotations.Insert;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 import org.apache.ibatis.annotations.Select;
+import org.apache.ibatis.annotations.Update;
 
 @Mapper
 public interface MemberMapper {
+
+        // 회원 탈퇴(일부 데이터 지우기)
+        @Update({
+                        "UPDATE MEMBER",
+                        "SET UNAME=NULL, UPHONE=NULL, UROLE=NULL",
+                        "WHERE UEMAIL=#{obj.uemail}"
+        })
+        public int deleteMemberOne(@Param(value = "obj") MemberDTO member);
+
+        // 회원정보수정
+        @Update({
+                        "UPDATE",
+                        "MEMBER SET UNAME=#{obj.uname}, UPHONE=#{obj.uphone}",
+                        "WHERE UEMAIL=#{obj.uemail}"
+        })
+        public int updateMemberOne(@Param(value = "obj") MemberDTO member);
+
+        // 암호 변경
+        @Update({
+                        "UPDATE",
+                        "MEMBER SET UPW=#{pw}",
+                        "WHERE UEMAIL=#{email}"
+        })
+        public int updatePw(@Param(value = "email") String email,
+                        @Param(value = "pw") String pw);
 
         @Select({
                         "SELECT UEMAIL, UPW, UROLE, UPHONE, UNAME FROM MEMBER",

@@ -73,7 +73,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 http.csrf().ignoringAntMatchers("/h2-console/**");
                 http.headers().frameOptions().sameOrigin();
 
+                // rest controller 사용
                 http.csrf().ignoringAntMatchers("/api/**");
         }
-
 }

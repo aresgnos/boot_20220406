@@ -18,7 +18,10 @@ public class MemberDTO {
     // 등록일
     private Date uregdate;
 
+    // 여기는 임시로 보관하기 위한 용도
     // 날짜 포맷을 바꿔서 보관하기 위한 변수
     private String uregdate1;
+    // 새로운 암호
+    private String upw1;
 
 }

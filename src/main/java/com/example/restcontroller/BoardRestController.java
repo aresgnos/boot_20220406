@@ -5,7 +5,9 @@ import java.util.Map;
 import java.util.List;
 
 import com.example.dto.BoardDTO;
+import com.example.entity.BoardEntity;
 import com.example.mapper.BoardMapper;
+import com.example.repository.BoardRepository;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -22,7 +24,9 @@ import org.springframework.web.bind.annotation.RestController;
 public class BoardRestController {
 
     @Autowired
-    BoardMapper bMapper;
+    BoardMapper bMapper; // mybatis
+    @Autowired
+    BoardRepository bRepository; // jpa
 
     // global.properties에 설정되어있는 값을 가져오는 것
     @Value("${board.page.count}")
@@ -139,6 +143,43 @@ public class BoardRestController {
             map.put("status", 200);
         }
         return map;
+    }
+
+    // 127.0.0.1:9090/ROOT/api/board/updatehit1?no=2
+    // 게시물 조회수 1증가
+    @RequestMapping(value = "/updatehit1", method = { RequestMethod.PUT }, consumes = {
+            MediaType.ALL_VALUE }, produces = {
+                    MediaType.APPLICATION_JSON_VALUE })
+
+    public Map<String, Object> boardUpdate1PUT(@RequestParam(name = "no") long no) {
+        Map<String, Object> map = new HashMap<>();
+        try {
+            BoardEntity board = bRepository.findById(no).orElse(null);
+            board.setHit(board.getHit() + 1L);
+            bRepository.save(board);
+            map.put("status", 200);
+        } catch (Exception e) {
+            map.put("status", 0);
+        }
+        return map;
+    }
+
+    @RequestMapping(value = "/handleprev", method = { RequestMethod.GET }, consumes = {
+            MediaType.ALL_VALUE }, produces = {
+                    MediaType.APPLICATION_JSON_VALUE })
+
+    public Map<String, Object> handlePrevPUT(@RequestParam(name = "no") long no) {
+        Map<String, Object> map = new HashMap<>();
+        try {
+            BoardEntity board = bRepository.findTop1ByNoLessThanOrderByNoDesc(no);
+            board.setNo(no);
+            map.put("status", 200);
+
+        } catch (Exception e) {
+            map.put("status", 0);
+        }
+        return map;
+
     }
 
 }

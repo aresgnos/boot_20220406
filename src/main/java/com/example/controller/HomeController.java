@@ -30,6 +30,14 @@ public class HomeController {
     @Value("${default.image}")
     String DEFAULT_IMAGE;
 
+    // 통합해서 build
+    // 127.0.0.1:9090/ROOT/vue
+    @GetMapping(value = "/vue")
+    public String vueGET() {
+        // vue에서 build한 index.html파일의 위치
+        return "/vue/index";
+    }
+
     // 127.0.0.1:9090/ROOT/
     // 127.0.0.1:9090/ROOT/home
     // 127.0.0.1:9090/ROOT/main

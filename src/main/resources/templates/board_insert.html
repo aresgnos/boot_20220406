@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>게시판 글쓰기</title>
+</head>
+<body>
+    <div style="padding:50px">
+        <h3>게시판 글쓰기</h3>
+        <hr />
+        
+        <!-- @를 넣으면 context-path(ROOT)가 자동으로 잡힌다. -->
+        <form th:action="@{/board/insert}" method="post">
+            
+            <!-- name값은 entity의 변수명과 맞춘다. -->
+            <label>제목</label><input type="text" name="title" /><br />
+            <label>내용</label><textarea type="text" rows="6" cols="22" name="content"></textarea><br />
+            <label>작성자</label><input type="text" name="writer" /><br />
+
+                <input type="submit" value="글쓰기" style="margin-left:210px;">
+
+        </form>
+    </div>
+
+<style>
+label {
+    display: inline-block;
+    width: 100px;
+    margin-bottom: 8px;;
+    text-align: center;
+}
+</style>
+</body>
+
+</html>
+

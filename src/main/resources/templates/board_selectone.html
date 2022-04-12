@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>게시판상세화면</title>
+</head>
+<body>
+    <div style="padding: 50px;">
+        <div>
+        <h3>게시판상세화면</h3>
+        
+            <table border="1">
+            <tr>
+                <th>글번호</th>
+                <th>제목</th>
+                <th>작성자</th>
+                <th>조회수</th>
+                <th>날짜</th>
+            </tr>
+            <tr>
+                <td th:text="${brd.no}"></td>
+                <td th:text="${brd.title}"></td>
+                <td th:text="${brd.writer}"></td>
+                <td th:text="${brd.hit}"></td>
+                <td th:text="${brd.regdate}"></td>
+            </tr>
+        </table>
+        <div style="margin-top:10px;">
+            <button>수정</button>
+            <button>삭제</button>
+            <button th:onclick="|javascript:handlePrev('${brd.no}')|">이전글</button>
+            <button>다음글</button>
+            <a th:href="@{/board/selectlist}"><button>목록</button></a>
+            
+        </div>
+            <hr />
+            <!-- 히든으로 no를 보내도 됨. -->
+            <form th:action="@{/board/insertreply(bno=${brd.no})}" method="post">
+                <input type="text" name="board.no" th:value="${brd.no}" /><br />
+                <textarea rows="6" name="content" placeholder="답글작성"></textarea><br />
+                <input type="text" name="writer" placeholder="작성자" /><br />
+                <input type="submit" value="답글작성" /><br />
+            </form>
+            <hr />
+
+            <h3>답글목록</h3>
+            <table border="1">
+                <tr th:each="rep : ${brd.replyList}">
+                    <td th:text="${rep.no}"></td>
+                    <td th:text="${rep.writer}"></td>
+                    <td th:text="${rep.content}"></td>
+                    <td th:text="${rep.regdate}"></td>
+                </tr>
+            </table>
+            <hr />
+            
+            <table border="1">
+                <tr th:each="rep : ${repList}">
+                    <td th:text="${rep.no}"></td>
+                    <td th:text="${rep.writer}"></td>
+                    <td th:text="${rep.content}"></td>
+                    <td th:text="${rep.regdate}"></td>
+                </tr>
+            </table>
+
+    </div>
+    <script>
+        function handlePrev(no) {
+            const xhr = new XMLHttpRequest();
+            const url = '/ROOT/api/board/handleprev'
+            xhr.open("GET", url, true);
+            xhr.responseType="json";
+            xhr.setRequestHeader('Content-Type', 'application/json; charset=UTF-8;');
+            xhr.onload = function(e) {
+                console.log(e.target);
+                if(e.target.response.status === 200){
+                    // 2. 다음 페이지 이동
+                    location.href="/ROOT/board/selectone?no=" + no;
+                }
+            }
+            xhr.send(); // 호출해야 onload가 반응함
+        }
+    </script>
+</body>
+</html>
+
+<style>
+/* table {
+    
+    width:100%;
+   
+} */
+
+td, th{
+    border:1px #000000 solid;
+    padding: 10px;
+    text-align: center;
+}
+
+thead {
+    background-color: #000000;
+    color: #ffffff;
+}
+
+
+</style>

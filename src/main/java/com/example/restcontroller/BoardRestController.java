@@ -164,15 +164,16 @@ public class BoardRestController {
         return map;
     }
 
+    // 이전글
     @RequestMapping(value = "/handleprev", method = { RequestMethod.GET }, consumes = {
             MediaType.ALL_VALUE }, produces = {
                     MediaType.APPLICATION_JSON_VALUE })
 
-    public Map<String, Object> handlePrevPUT(@RequestParam(name = "no") long no) {
+    public Map<String, Object> handlePrevGET(@RequestParam(name = "no") long no) {
         Map<String, Object> map = new HashMap<>();
         try {
             BoardEntity board = bRepository.findTop1ByNoLessThanOrderByNoDesc(no);
-            board.setNo(no);
+            board.setNo(board.getNo());
             map.put("status", 200);
 
         } catch (Exception e) {

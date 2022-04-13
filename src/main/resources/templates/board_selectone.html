@@ -69,7 +69,7 @@
     <script>
         function handlePrev(no) {
             const xhr = new XMLHttpRequest();
-            const url = '/ROOT/api/board/handleprev'
+            const url = '/ROOT/api/board/handleprev?no=' +no;
             xhr.open("GET", url, true);
             xhr.responseType="json";
             xhr.setRequestHeader('Content-Type', 'application/json; charset=UTF-8;');

@@ -1,10 +1,14 @@
 package com.example.controller;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 
 import com.example.dto.ItemDTO;
+import com.example.entity.BuyProjection;
 import com.example.mapper.ItemMapper;
+import com.example.repository.BuyRepository;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -24,6 +28,9 @@ public class SellerController {
 
     @Autowired
     ItemMapper iMapper;
+
+    @Autowired
+    BuyRepository buyRepository;
 
     // int PAGECNT = 10
     // global.properties에 설정되어있는 값을 가져오는 것
@@ -94,7 +101,7 @@ public class SellerController {
 
             // 알림창이 필요시
             model.addAttribute("msg", "물품변경완료");
-            model.addAttribute("url", "/ROOT/seller/home");
+            model.addAttribute("url", "/seller/home");
             return "alert";
 
             // 알림창이 필요없으면
@@ -145,7 +152,18 @@ public class SellerController {
             // 페이지네이션 개수
             long cnt = iMapper.selectItemCount(user.getUsername(), txt);
             model.addAttribute("pages", (cnt - 1) / PAGECNT + 1);
+
+            // 주문내역
+            List<Long> list1 = new ArrayList<>();
+            for (ItemDTO item : list) {
+                list1.add(item.getIcode());
+            }
+
+            List<BuyProjection> list2 = buyRepository.findByItem_icodeIn(list1);
+            model.addAttribute("list2", list2);
+
             return "seller";
+
         }
         return "redirect:/member/login";
     }

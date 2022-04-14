@@ -8,15 +8,11 @@
 </head>
 <body>
     <div style="padding: 50px;">
-        <div>
         <h3>판매자 홈</h3>
-        </div>
         
         <hr />
-       
             <h4>물품목록</h4>
             <a th:href="@{/seller/insertitem}">물품등록</a>
-        
         
         <table>
             <thead>
@@ -57,11 +53,86 @@
             <th:block th:each="i : ${#numbers.sequence(1, pages)}">
                 <a th:href="@{/seller/home(page=${i}, txt=${param.txt})}" th:text="${i}"></a>
             </th:block>
-            </div>
-            
         </div>
+
+            <h4>주문내역</h4>
+            <table>
+                <thead>
+                <tr>
+                    <th>주문번호</th>
+                    <th>주문수량</th>
+                    <th>주문일자</th>
+                    <th>물품명</th>
+                    <th>가격</th>
+                    <th>주문자</th>
+                </tr>
+            </thead>
+                <tr th:each="tmp : ${list2}">
+                    <td th:text="${tmp.bno}"></td>
+                    <td th:text="${tmp.bcnt}"></td>
+                    <td th:text="${tmp.bregdate}"></td>
+                    <td th:text="${tmp.ItemIname}"></td>
+                    <td th:text="${tmp.ItemIprice}"></td>
+                    <td th:text="${tmp.MemberUname}"></td>
+                </tr>
+            </table>
+       
     </div>
+
+    <script src="https://unpkg.com/mqtt@4.3.7/dist/mqtt.min.js"></script>
     <script>
+         	const state = {
+	        message : '',  // 보낼 메세지 
+	        client  : '' , // 접속한 클라이언트 객체
+	
+	        options : {
+	            clean : true, //세션 초기화
+	            reconnectPeriod : 20000, // 주기적인 접속 시간
+	
+	            // 고유값 ex)d200, d212 등
+	            clientId    : 'd216_'+ new Date().getTime(),
+	            username    : 'ds606', // 아이디
+	            password    : 'ds606', // 암호
+	        },
+	
+	        topic : 'ds/seller1/#',
+            // 'ds/[[판매자아이디]]/#'
+	        qos   : 0,  // 0부터 2까지의 숫자
+	    };
+			
+		const url = 'ws://1.234.5.158:11884';
+        try {
+            state.client = mqtt.connect(url, state.options);
+            console.log(state.client);
+
+            state.client.on('connect', () => { 
+                console.log('connect success!!');
+            });
+
+            state.client.on('error', () => { 
+                console.log('connect error!!');
+            });
+
+            state.client.on('message',(topic, message) => {
+                console.log(topic, JSON.parse(message));
+                location.reload(); //F5을 누름
+            });
+            
+            state.client.subscribe(state.topic, {qos:state.qos}, (error, res) => {
+                if(error) {
+                    console.log('subscribe topic error', error);
+                    return;
+                }
+                console.log('subscribe success', res);
+            });
+        }
+        catch(e){
+            console.log('mqtt error', e);
+        }
+	
+        
+
+        
 
         function handleUpdate(no) {
 			// GET으로 삭제 처리 주소창을 바꿈
@@ -105,6 +176,7 @@
 		}
 
 	</script>
+    
 </body>
 </html>
 

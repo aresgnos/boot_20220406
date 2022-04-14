@@ -4,19 +4,21 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.MediaType;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
-
 import com.example.entity.BuyEntity;
 import com.example.entity.BuyProjection;
 import com.example.entity.ItemEntity;
 import com.example.entity.MemberEntity;
+import com.example.jwt.JwtUtil;
 import com.example.repository.BuyRepository;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.MediaType;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestHeader;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequestMapping(value = "/api/buy")
@@ -24,6 +26,37 @@ public class BuyRestController {
 
         @Autowired
         BuyRepository bRepository;
+
+        @Autowired
+        JwtUtil jwtUtil;
+
+        // { bcnt:2, item:{icode: 3} } + headers token으로 전송됨
+        @RequestMapping(value = "/insert2", method = { RequestMethod.POST }, consumes = {
+                        MediaType.ALL_VALUE }, produces = { MediaType.APPLICATION_JSON_VALUE })
+        public Map<String, Object> buyInsert2Post(
+                        @RequestHeader(name = "token") String token,
+                        @RequestBody BuyEntity buyEntity) {
+                Map<String, Object> map = new HashMap<String, Object>();
+                try {
+                        // 토큰에서 이메일 추출
+                        String email = jwtUtil.extractUsername(token);
+
+                        // 회원 entity 객체 생성 및 이메일 추가
+                        MemberEntity memberEntity = new MemberEntity();
+                        memberEntity.setUemail(email);
+
+                        // 주문 entity에 추가
+                        buyEntity.setMember(memberEntity);
+
+                        // 저장소를 이용해서 DB에 추가
+                        bRepository.save(buyEntity);
+                        map.put("status", 200);
+                } catch (Exception e) {
+                        e.printStackTrace();
+                        map.put("status", 0);
+                }
+                return map;
+        }
 
         // 주문하기
         // 127.0.0.1:9090/ROOT/api/buy/insert

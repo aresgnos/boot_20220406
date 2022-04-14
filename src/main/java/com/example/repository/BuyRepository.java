@@ -19,7 +19,11 @@ public interface BuyRepository extends JpaRepository<BuyEntity, Long> {
 
     BuyProjection findByBno(Long bno);
 
+    // 고객용 주문내역 (이메일이 본인거인 것만)
     List<BuyProjection> findByMember_uemail(String uemail);
+
+    // 판매자용 주문내역 (In =여러개, _ =아래에, icode가 일치하는 것 가져오기)
+    List<BuyProjection> findByItem_icodeIn(List<Long> code);
 
     // SELECT * FROM 테이블명 WHERE 1 ORDER BY BNO ASC
     List<BuyProjection> findByOrderByBnoAsc();

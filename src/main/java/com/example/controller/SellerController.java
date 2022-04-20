@@ -6,8 +6,11 @@ import java.util.List;
 
 import com.example.dto.ItemDTO;
 import com.example.entity.BuyProjection;
+import com.example.entity.ItemEntity;
+import com.example.entity.MemberEntity;
 import com.example.mapper.ItemMapper;
 import com.example.repository.BuyRepository;
+import com.example.service.ItemService;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -27,16 +30,113 @@ import org.springframework.web.multipart.MultipartFile;
 public class SellerController {
 
     @Autowired
-    ItemMapper iMapper;
+    ItemMapper iMapper; // MYBATIS
 
     @Autowired
-    BuyRepository buyRepository;
+    BuyRepository buyRepository; // JPA + HIBERNATE
+
+    @Autowired
+    ItemService iService;
 
     // int PAGECNT = 10
     // global.properties에 설정되어있는 값을 가져오는 것
     @Value("${board.page.count}")
     int PAGECNT;
 
+    // 일괄 삭제, 수정
+    @GetMapping(value = "/deleteupdatebatch")
+    public String deleteupdateBatchGET(
+            Model model,
+            @RequestParam(name = "btn") String btn,
+            @RequestParam(name = "no") Long[] no) {
+
+        System.out.println(btn);
+        System.out.println(no[0]);
+        if (btn.equals("일괄수정")) {
+            List<ItemEntity> list = iService.selectItemEntityIn(no);
+            model.addAttribute("list", list);
+
+            return "update_item_batch";
+
+        } else if (btn.equals("일괄삭제")) {
+            iService.deleteItemBatch(no);
+
+        }
+        return "redirect:/seller/home";
+    }
+
+    // 일괄 수정
+    @PostMapping(value = "/updateitembatch")
+    public String updateitemBatchPOST(
+            @RequestParam(name = "icode") Long[] icode,
+            @RequestParam(name = "iname") String[] iname,
+            @RequestParam(name = "icontent") String[] icontent,
+            @RequestParam(name = "iprice") Long[] iprice,
+            @RequestParam(name = "iquantity") Long[] iquantity) {
+
+        List<ItemEntity> list = new ArrayList<>();
+        for (int i = 0; i < iname.length; i++) {
+            ItemEntity item = new ItemEntity();
+            item.setIcode(icode[i]);
+            item.setIname(iname[i]);
+            item.setIcontent(icontent[i]);
+            item.setIprice(iprice[i]);
+            item.setIquantity(iquantity[i]);
+
+            list.add(item);
+
+        }
+
+        iService.updateItemBatch(list);
+        return "redirect:/seller/home";
+    }
+
+    // 일괄 등록
+    @GetMapping(value = "/insertitembatch")
+    public String insertBatchGET() {
+        return "insert_item_batch";
+    }
+
+    @PostMapping(value = "/insertitembatch")
+    public String insertBatchPOST(
+            @AuthenticationPrincipal User user,
+            @RequestParam(name = "iname") String[] iname,
+            @RequestParam(name = "icontent") String[] icontent,
+            @RequestParam(name = "iprice") Long[] iprice,
+            @RequestParam(name = "iquantity") Long[] iquantity,
+            @RequestParam(name = "timage") MultipartFile[] iimage) throws IOException {
+
+        List<ItemEntity> list = new ArrayList<>();
+        for (int i = 0; i < iname.length; i++) {
+            System.out.println(iname[i]);
+            System.out.println(icontent[i]);
+            System.out.println(iprice[i]);
+            System.out.println(iquantity[i]);
+            System.out.println(iimage[i].getOriginalFilename());
+
+            ItemEntity item = new ItemEntity();
+            item.setIname(iname[i]);
+            item.setIcontent(icontent[i]);
+            item.setIprice(iprice[i]);
+            item.setIquantity(iquantity[i]);
+            item.setIimage(iimage[i].getBytes());
+            item.setIimagename(iimage[i].getOriginalFilename());
+            item.setIimagesize(iimage[i].getSize());
+            item.setIimagetype(iimage[i].getContentType());
+
+            MemberEntity member = new MemberEntity();
+            member.setUemail(user.getUsername());
+            item.setMember(member);
+
+            list.add(item);
+        }
+
+        iService.insertItemBatch(list);
+
+        return "redirect:/seller/home";
+    }
+
+    // 물품 등록
     @GetMapping(value = "/insertitem")
     public String insertitemGET() {
         return "insertitem";
@@ -68,7 +168,7 @@ public class SellerController {
         return "redirect:/member/login";
     }
 
-    // 수정
+    // 물품 수정
     @GetMapping(value = "/updateitem")
     public String updateitemGET(
             Model model,
@@ -110,7 +210,7 @@ public class SellerController {
         return "redirect:/member/login";
     }
 
-    // 삭제
+    // 물품 삭제
     @PostMapping(value = "/deleteitem")
     public String deleteitemPOST(
             @AuthenticationPrincipal User user,

@@ -18,6 +18,19 @@
 	</properties>
 	<dependencies>
 
+		<!-- 컨트롤러에서 rest를 쓸 수 있음 -->
+		<dependency>
+			<groupId>com.squareup.okhttp3</groupId>
+			<artifactId>okhttp</artifactId>
+		</dependency>
+
+		<!-- https://mvnrepository.com/artifact/org.json/json -->
+		<dependency>
+			<groupId>org.json</groupId>
+			<artifactId>json</artifactId>
+			<version>20210307</version>
+		</dependency>
+
 		<!-- hibernate 다운그레이드 -->
 		<dependency>
 			<groupId>org.hibernate</groupId>

@@ -5,7 +5,6 @@ import java.util.Date;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
-
 import javax.persistence.Table;
 
 import org.hibernate.annotations.CreationTimestamp;
@@ -24,6 +23,7 @@ public class MemberEntity {
 
     // 암호
     @Column(nullable = false)
+    // @JsonProperty(access = Access.WRITE_ONLY)
     private String upw;
 
     // 이름
@@ -40,5 +40,9 @@ public class MemberEntity {
     @CreationTimestamp // CURRENT_DATE
     @Column(name = "UREGDATE")
     private Date uregdate;
+
+    // @JsonBackReference
+    // @OneToMany(mappedBy = "member")
+    // private List<BuyEntity> buyList = new ArrayList<>();
 
 }

@@ -1,5 +1,6 @@
 package com.example.boot_20220406;
 
+import org.hibernate.type.SortedSetType;
 import org.mybatis.spring.annotation.MapperScan;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -8,6 +9,8 @@ import org.springframework.boot.web.servlet.ServletComponentScan;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
+
+import ch.qos.logback.core.net.SyslogOutputStream;
 
 @SpringBootApplication
 
@@ -23,7 +26,8 @@ import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 		"com.example.restcontroller",
 		"com.example.config",
 		"com.example.service",
-		"com.example.jwt"
+		"com.example.jwt",
+		"com.example.schedule"
 
 })
 
@@ -34,7 +38,7 @@ import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 @EntityScan(basePackages = { "com.example.entity" })
 
 // 저장소(jpa)= Mapper
-@EnableJpaRepositories(basePackages = { "com/example.repository" })
+@EnableJpaRepositories(basePackages = { "com.example.repository" })
 public class Boot20220406Application {
 
 	public static void main(String[] args) {

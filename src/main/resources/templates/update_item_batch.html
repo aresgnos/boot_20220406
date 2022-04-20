@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>물품일괄등록</title>
+</head>
+<body>
+    <div style="padding:50px">
+        <h3>물품일괄수정</h3>
+        <hr />
+        
+        <!-- @를 넣으면 context-path(ROOT)가 자동으로 잡힌다. -->
+        <!-- hidden으로 csrf 토큰이 숨어있다. -->
+        <form th:action="@{/seller/updateitembatch}" method="post">
+
+            <!-- sequence 숫자를 늘리면 항목을 늘릴 수 있다. -->
+            <div th:each="item : ${list}">
+                <label>물품코드</label><input type="text" name="icode" th:value="${item.icode}" readonly/><br />
+                <label>물품명</label><input type="text" name="iname" th:value="${item.iname}" /><br />
+                <label>물품내용</label><textarea type="text" rows="6" cols="22" name="icontent" th:value="${item.icontent}"></textarea><br />
+                <label>물품가격</label><input type="text" name="iprice" th:value="${item.iprice}" /><br />
+                <label>물품수량</label><input type="text" name="iquantity" th:value="${item.iquantity}" /><br />
+                <hr />
+            </div>
+                <input type="submit" value="물품일괄수정" style="margin-left:210px;">
+                <a th:href="@{seller/home}">목록으로</a>
+
+        </form>
+    </div>
+
+<style>
+label {
+    display: inline-block;
+    width: 100px;
+    margin-bottom: 8px;;
+    text-align: center;
+}
+</style>
+</body>
+
+</html>
+
